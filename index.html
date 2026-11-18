@@ -3,135 +3,156 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Daily Expense & Pocket Money Tally</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <meta name="description" content="Daily Expense and Pocket Money Tally - Track your daily spending with categories like Chai, Travel, Stationery and more." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; font-src 'self';" />
+  <title>Daily Expense &amp; Pocket Money Tally</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-wrapper">
-    <!-- Header -->
-    <header class="app-header">
+  <!-- Skip Navigation Link for Keyboard/Screen Reader Users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <main id="main-content" class="app-wrapper" role="main">
+    <!-- ============================================================
+         HEADER
+         ============================================================ -->
+    <header class="app-header" role="banner">
       <div class="brand">
-        <div class="brand-icon">₹</div>
+        <div class="brand-icon" aria-hidden="true">₹</div>
         <div>
-          <h1 class="brand-title">PocketTally</h1>
-          <p class="brand-subtitle">Daily Expense & Pocket Money Tracker</p>
+          <h1 class="brand-title">Daily Expense &amp; Pocket Money Tally</h1>
+          <p class="brand-subtitle">Track your daily pocket money spending</p>
         </div>
       </div>
-      <div class="current-date-badge" id="currentDateDisplay">Today</div>
+      <time class="current-date-badge" id="currentDateDisplay" aria-label="Current date">Today</time>
     </header>
 
-    <!-- Running Totals Cards -->
-    <section class="totals-grid" aria-label="Running Totals">
-      <!-- Today's Spend -->
-      <div class="total-card today-card">
-        <div class="card-glow"></div>
+    <!-- ============================================================
+         RUNNING TOTALS — Two high-contrast summary cards
+         ============================================================ -->
+    <section class="totals-grid" aria-label="Spending summary">
+      <!-- Today's Spend Card -->
+      <div class="total-card today-card" role="region" aria-label="Today's spending total">
+        <div class="card-glow" aria-hidden="true"></div>
         <div class="card-header">
-          <span class="card-label">Today's Spend</span>
-          <span class="card-pill" id="todayCountPill">0 items</span>
+          <span class="card-label" id="todayLabel">Today's Spend</span>
+          <span class="card-pill" id="todayCountPill" aria-live="polite">0 items</span>
         </div>
         <div class="card-amount-wrapper">
-          <span class="currency-symbol">₹</span>
-          <span class="card-amount" id="todayTotal">0</span>
+          <span class="currency-symbol" aria-hidden="true">₹</span>
+          <output class="card-amount" id="todayTotal" aria-labelledby="todayLabel" aria-live="polite">0</output>
         </div>
         <div class="card-footer">
-          <span class="card-subtext">Reset at 12:00 AM</span>
+          <span class="card-subtext">Resets at midnight</span>
         </div>
       </div>
 
-      <!-- This Week's Spend -->
-      <div class="total-card week-card">
-        <div class="card-glow"></div>
+      <!-- This Week's Spend Card -->
+      <div class="total-card week-card" role="region" aria-label="This week's spending total">
+        <div class="card-glow" aria-hidden="true"></div>
         <div class="card-header">
-          <span class="card-label">This Week's Spend</span>
-          <span class="card-pill" id="weekCountPill">0 items</span>
+          <span class="card-label" id="weekLabel">This Week's Spend</span>
+          <span class="card-pill" id="weekCountPill" aria-live="polite">0 items</span>
         </div>
         <div class="card-amount-wrapper">
-          <span class="currency-symbol">₹</span>
-          <span class="card-amount" id="weekTotal">0</span>
+          <span class="currency-symbol" aria-hidden="true">₹</span>
+          <output class="card-amount" id="weekTotal" aria-labelledby="weekLabel" aria-live="polite">0</output>
         </div>
         <div class="card-footer">
-          <span class="card-subtext">Monday to Sunday</span>
+          <span class="card-subtext">Monday – Sunday</span>
         </div>
       </div>
     </section>
 
-    <!-- Quick Entry Bar -->
-    <section class="quick-entry-section">
+    <!-- ============================================================
+         QUICK ENTRY BAR — Input form for logging expenses
+         ============================================================ -->
+    <section class="quick-entry-section" aria-label="Quick expense entry">
       <div class="section-title-row">
-        <h2 class="section-title">Quick Log</h2>
-        <span class="tap-hint">Tap any category to log instantly</span>
+        <h2 class="section-title">Quick Entry Bar</h2>
+        <span class="tap-hint" aria-hidden="true">Tap a category to log</span>
       </div>
 
-      <form id="expenseForm" class="entry-form" onsubmit="return false;">
-        <div class="inputs-row">
-          <!-- Item Name Input -->
-          <div class="input-group title-group">
-            <label for="itemTitle" class="input-label">What did you spend on?</label>
-            <div class="input-field-wrapper">
-              <span class="input-icon">✏️</span>
-              <input
-                type="text"
-                id="itemTitle"
-                class="text-input"
-                placeholder="Chai, Snacks, Auto fare, Stationery..."
-                autocomplete="off"
-                maxlength="50"
-              />
+      <form id="expenseForm" class="entry-form" novalidate>
+        <fieldset class="inputs-fieldset">
+          <legend class="sr-only">Expense details</legend>
+
+          <div class="inputs-row">
+            <!-- Item Name Input -->
+            <div class="input-group title-group">
+              <label for="itemTitle" class="input-label">Item Name</label>
+              <div class="input-field-wrapper">
+                <span class="input-icon" aria-hidden="true">✏️</span>
+                <input
+                  type="text"
+                  id="itemTitle"
+                  name="itemTitle"
+                  class="text-input"
+                  placeholder="Chai, Snacks, Auto fare, Stationery"
+                  autocomplete="off"
+                  maxlength="50"
+                  aria-describedby="titleHelp"
+                />
+              </div>
+              <span id="titleHelp" class="sr-only">Enter the name of the expense item. Leave blank to use the category name.</span>
+            </div>
+
+            <!-- Amount Input -->
+            <div class="input-group amount-group">
+              <label for="itemAmount" class="input-label">Amount in ₹</label>
+              <div class="input-field-wrapper amount-wrapper" id="amountWrapper">
+                <span class="input-currency-prefix" aria-hidden="true">₹</span>
+                <input
+                  type="number"
+                  id="itemAmount"
+                  name="itemAmount"
+                  class="number-input"
+                  placeholder="0"
+                  min="0.50"
+                  max="100000"
+                  step="0.50"
+                  inputmode="decimal"
+                  required
+                  aria-required="true"
+                  aria-describedby="amountHelp amountError"
+                />
+              </div>
+              <span id="amountHelp" class="sr-only">Enter the expense amount in Indian Rupees.</span>
+              <span id="amountError" class="error-text hidden" role="alert" aria-live="assertive"></span>
             </div>
           </div>
+        </fieldset>
 
-          <!-- Amount Input -->
-          <div class="input-group amount-group">
-            <label for="itemAmount" class="input-label">Amount (₹)</label>
-            <div class="input-field-wrapper amount-wrapper">
-              <span class="input-currency-prefix">₹</span>
-              <input
-                type="number"
-                id="itemAmount"
-                class="number-input"
-                placeholder="0"
-                min="0.5"
-                step="any"
-                inputmode="decimal"
-                required
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Amount Increments -->
-        <div class="quick-chips-row">
-          <span class="quick-chips-label">Quick add:</span>
-          <button type="button" class="chip-btn" data-add="10">+₹10</button>
-          <button type="button" class="chip-btn" data-add="20">+₹20</button>
-          <button type="button" class="chip-btn" data-add="50">+₹50</button>
-          <button type="button" class="chip-btn" data-add="100">+₹100</button>
+        <!-- Quick Amount Chips -->
+        <div class="quick-chips-row" role="group" aria-label="Quick amount buttons">
+          <span class="quick-chips-label" id="quickAddLabel">Quick add:</span>
+          <button type="button" class="chip-btn" data-add="10" aria-label="Add 10 rupees to amount">+₹10</button>
+          <button type="button" class="chip-btn" data-add="20" aria-label="Add 20 rupees to amount">+₹20</button>
+          <button type="button" class="chip-btn" data-add="50" aria-label="Add 50 rupees to amount">+₹50</button>
+          <button type="button" class="chip-btn" data-add="100" aria-label="Add 100 rupees to amount">+₹100</button>
         </div>
 
         <!-- Category One-Tap Buttons -->
-        <div class="category-actions">
-          <label class="input-label">Select Category & Log</label>
-          <div class="category-buttons-grid">
+        <fieldset class="category-actions">
+          <legend class="input-label">Select Category &amp; Log</legend>
+          <div class="category-buttons-grid" role="group" aria-label="Category selection buttons">
             <button
               type="button"
               class="category-btn chai"
               data-category="Chai & Snacks"
-              data-icon="☕"
+              aria-label="Log expense under Chai and Snacks category"
             >
-              <span class="cat-icon">☕</span>
-              <span class="cat-text">Chai & Snacks</span>
+              <span class="cat-icon" aria-hidden="true">☕</span>
+              <span class="cat-text">Chai &amp; Snacks</span>
             </button>
 
             <button
               type="button"
               class="category-btn travel"
               data-category="Travel"
-              data-icon="🛺"
+              aria-label="Log expense under Travel category"
             >
-              <span class="cat-icon">🛺</span>
+              <span class="cat-icon" aria-hidden="true">🛺</span>
               <span class="cat-text">Travel</span>
             </button>
 
@@ -139,9 +160,9 @@
               type="button"
               class="category-btn stationery"
               data-category="Stationery"
-              data-icon="📝"
+              aria-label="Log expense under Stationery category"
             >
-              <span class="cat-icon">📝</span>
+              <span class="cat-icon" aria-hidden="true">📝</span>
               <span class="cat-text">Stationery</span>
             </button>
 
@@ -149,56 +170,72 @@
               type="button"
               class="category-btn other"
               data-category="Other"
-              data-icon="🏷️"
+              aria-label="Log expense under Other category"
             >
-              <span class="cat-icon">🏷️</span>
+              <span class="cat-icon" aria-hidden="true">🏷️</span>
               <span class="cat-text">Other</span>
             </button>
           </div>
-        </div>
+        </fieldset>
 
         <!-- Primary Add Expense Button -->
-        <button type="submit" id="addExpenseBtn" class="primary-add-btn">
+        <button type="submit" id="addExpenseBtn" class="primary-add-btn" aria-label="Log expense with selected category">
           <span>Log Expense</span>
-          <span class="btn-arrow">→</span>
+          <span class="btn-arrow" aria-hidden="true">→</span>
         </button>
       </form>
     </section>
 
-    <!-- Recent Spend Log Section -->
-    <section class="log-section">
+    <!-- ============================================================
+         RECENT SPEND LOG — List of logged expenses
+         ============================================================ -->
+    <section class="log-section" aria-label="Recent spend log">
       <div class="log-header">
         <div class="log-title-area">
           <h2 class="section-title">Recent Spend Log</h2>
-          <span class="log-count" id="logCount">0 entries</span>
+          <span class="log-count" id="logCount" aria-live="polite">0 entries</span>
         </div>
         <div class="log-actions">
-          <button type="button" id="clearAllBtn" class="clear-all-btn" title="Clear all expenses">
-            <span class="btn-icon">🗑️</span>
+          <button
+            type="button"
+            id="clearAllBtn"
+            class="clear-all-btn"
+            aria-label="Clear all expense entries"
+          >
+            <span class="btn-icon" aria-hidden="true">🗑️</span>
             <span>Clear All</span>
           </button>
         </div>
       </div>
 
-      <!-- Expense List -->
-      <div id="expenseList" class="expense-list" role="list">
-        <!-- Rendered via JavaScript -->
-      </div>
+      <!-- Expense List (populated by JavaScript) -->
+      <ul id="expenseList" class="expense-list" role="list" aria-label="Expense entries">
+        <!-- Expense items rendered via script.js -->
+      </ul>
 
       <!-- Empty State -->
-      <div id="emptyState" class="empty-state">
-        <div class="empty-icon">☕</div>
+      <div id="emptyState" class="empty-state" role="status" aria-live="polite">
+        <div class="empty-icon" aria-hidden="true">☕</div>
         <h3 class="empty-title">No expenses logged yet</h3>
         <p class="empty-desc">Enter an amount above and tap a category button to log your first spend!</p>
       </div>
     </section>
 
-    <!-- Confirmation Modal for Clear All -->
-    <div id="confirmModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <!-- ============================================================
+         CONFIRMATION MODAL — Clear All warning dialog
+         ============================================================ -->
+    <div
+      id="confirmModal"
+      class="modal-backdrop hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+      aria-describedby="modalDesc"
+    >
       <div class="modal-card">
-        <div class="modal-icon">⚠️</div>
+        <div class="modal-icon" aria-hidden="true">⚠️</div>
         <h3 id="modalTitle" class="modal-title">Clear all expenses?</h3>
-        <p class="modal-desc">This will permanently delete all logged entries from your pocket money tally.</p>
+        <p id="modalDesc" class="modal-desc">This will permanently delete all logged entries from your pocket money tally.</p>
         <div class="modal-buttons">
           <button type="button" id="cancelClearBtn" class="modal-btn secondary">Cancel</button>
           <button type="button" id="confirmClearBtn" class="modal-btn danger">Yes, Clear All</button>
@@ -206,9 +243,12 @@
       </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  </div>
+    <!-- Live Region for Screen Reader Announcements -->
+    <div id="srAnnounce" class="sr-only" role="status" aria-live="assertive" aria-atomic="true"></div>
+
+    <!-- Toast Visual Notification -->
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  </main>
 
   <script src="script.js"></script>
 </body>

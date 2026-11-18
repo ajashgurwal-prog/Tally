@@ -1,22 +1,31 @@
 /* ==========================================================================
-   Daily Expense & Pocket Money Tally - Stylesheet
-   Modern, High-Contrast, Minimalist Design with Large Tap Targets
+   Daily Expense & Pocket Money Tally — Stylesheet
+   ============================================================================
+   Design Goals:
+   - Minimalist layout with high-contrast colors (WCAG AA compliant)
+   - Large tap targets (minimum 44×44px) for quick mobile logging
+   - Responsive single-screen layout adapting from 320px to 1200px+
+   - System font stack (zero external dependencies)
    ========================================================================== */
 
+/* ==========================================================================
+   1. CUSTOM PROPERTIES (Design Tokens)
+   ========================================================================== */
 :root {
-  /* Color Palette */
+  /* Background Colors */
   --bg-main: #0a0e17;
   --bg-card: #131b2c;
   --bg-card-hover: #182238;
   --bg-input: #1a233a;
+
+  /* Border Colors */
   --border-subtle: #243048;
   --border-focus: #3b82f6;
 
-  /* Typography Colors */
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-inverse: #0a0e17;
+  /* Typography Colors — All pass WCAG AA against --bg-main / --bg-card */
+  --text-primary: #f1f5f9;      /* contrast ~15:1 on #131b2c */
+  --text-secondary: #94a3b8;    /* contrast ~5.5:1 on #131b2c */
+  --text-muted: #64748b;        /* contrast ~3.9:1 — decorative only */
 
   /* Brand Accents */
   --accent-today: #10b981;
@@ -24,7 +33,7 @@
   --accent-week: #6366f1;
   --accent-week-glow: rgba(99, 102, 241, 0.15);
 
-  /* Categories */
+  /* Category Colors */
   --cat-chai: #f59e0b;
   --cat-chai-bg: rgba(245, 158, 11, 0.14);
   --cat-travel: #06b6d4;
@@ -34,24 +43,35 @@
   --cat-other: #10b981;
   --cat-other-bg: rgba(16, 185, 129, 0.14);
 
-  /* Functional */
+  /* Functional Colors */
   --danger: #ef4444;
   --danger-bg: rgba(239, 68, 68, 0.12);
+
+  /* Border Radii */
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-full: 9999px;
 
+  /* Shadows */
   --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.25);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.45);
 
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* Typography — System font stack, zero external requests */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Segoe UI Mono', 'Consolas', 'Courier New', monospace;
+
+  /* Minimum interactive target size (WCAG 2.5.8 Level AAA) */
+  --min-target: 44px;
 }
 
-/* Base & Reset */
-*, *::before, *::after {
+/* ==========================================================================
+   2. RESET & BASE
+   ========================================================================== */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -75,7 +95,63 @@ body {
   background: radial-gradient(circle at 50% 0%, #151e36 0%, #0a0e17 70%);
 }
 
-/* App Wrapper */
+/* ==========================================================================
+   3. ACCESSIBILITY UTILITIES
+   ========================================================================== */
+
+/* Screen-reader-only text (visually hidden, available to assistive tech) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip-to-main-content link (visible only on keyboard focus) */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 1000;
+  padding: 12px 24px;
+  background: var(--border-focus);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+}
+
+.skip-link:focus {
+  top: 16px;
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Global focus-visible styles for keyboard navigation */
+:focus-visible {
+  outline: 3px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Only show focus ring for keyboard navigation, not mouse clicks */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Hidden utility class */
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   4. LAYOUT — App Wrapper
+   ========================================================================== */
 .app-wrapper {
   width: 100%;
   max-width: 580px;
@@ -85,7 +161,9 @@ body {
   margin: 0 auto;
 }
 
-/* Header */
+/* ==========================================================================
+   5. HEADER
+   ========================================================================== */
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -114,7 +192,7 @@ body {
 }
 
 .brand-title {
-  font-size: 1.45rem;
+  font-size: 1.3rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-primary);
@@ -137,7 +215,7 @@ body {
 }
 
 /* ==========================================================================
-   Running Totals (Summary Cards)
+   6. RUNNING TOTALS — Summary Cards
    ========================================================================== */
 .totals-grid {
   display: grid;
@@ -177,6 +255,7 @@ body {
 .today-card {
   border-top: 3px solid var(--accent-today);
 }
+
 .today-card .card-glow {
   background: var(--accent-today-glow);
 }
@@ -184,6 +263,7 @@ body {
 .week-card {
   border-top: 3px solid var(--accent-week);
 }
+
 .week-card .card-glow {
   background: var(--accent-week-glow);
 }
@@ -248,7 +328,7 @@ body {
 }
 
 /* ==========================================================================
-   Quick Entry Bar
+   7. QUICK ENTRY BAR — Form Section
    ========================================================================== */
 .quick-entry-section {
   background: var(--bg-card);
@@ -286,6 +366,13 @@ body {
   gap: 16px;
 }
 
+/* Remove default fieldset styling */
+.inputs-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
 .inputs-row {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
@@ -311,7 +398,7 @@ body {
   background: var(--bg-input);
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-field-wrapper:focus-within {
@@ -320,7 +407,11 @@ body {
 }
 
 .input-field-wrapper.shake {
-  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  border-color: var(--danger);
+}
+
+.input-field-wrapper.error {
   border-color: var(--danger);
 }
 
@@ -331,7 +422,8 @@ body {
   40%, 60% { transform: translate3d(3px, 0, 0); }
 }
 
-.input-icon, .input-currency-prefix {
+.input-icon,
+.input-currency-prefix {
   position: absolute;
   left: 14px;
   font-size: 1rem;
@@ -346,7 +438,8 @@ body {
   color: #38bdf8;
 }
 
-.text-input, .number-input {
+.text-input,
+.number-input {
   width: 100%;
   background: transparent;
   border: none;
@@ -356,6 +449,7 @@ body {
   font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 500;
+  min-height: var(--min-target);
 }
 
 .number-input {
@@ -365,19 +459,30 @@ body {
   font-weight: 700;
 }
 
-.text-input::placeholder, .number-input::placeholder {
+.text-input::placeholder,
+.number-input::placeholder {
   color: var(--text-muted);
   font-weight: 400;
 }
 
-/* Remove number spinner buttons */
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+/* Remove number spinner buttons for cleaner UI */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-input[type=number] {
+
+input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Error text below input */
+.error-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--danger);
+  min-height: 1em;
 }
 
 /* Quick Increment Chips */
@@ -398,14 +503,16 @@ input[type=number] {
   background: var(--bg-input);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
-  padding: 4px 12px;
+  padding: 6px 14px;
   font-family: var(--font-mono);
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   user-select: none;
+  min-height: var(--min-target);
+  min-width: var(--min-target);
 }
 
 .chip-btn:hover {
@@ -419,8 +526,11 @@ input[type=number] {
   transform: scale(0.96);
 }
 
-/* One-Tap Category Buttons */
+/* Category One-Tap Buttons */
 .category-actions {
+  border: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -447,7 +557,7 @@ input[type=number] {
   font-size: 0.92rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
   box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
@@ -471,10 +581,11 @@ input[type=number] {
   transform: translateY(1px) scale(0.98);
 }
 
-/* Category Colors & High-Contrast Accents */
+/* Category Color Accents */
 .category-btn.chai {
   border-color: rgba(245, 158, 11, 0.4);
 }
+
 .category-btn.chai:hover {
   background: var(--cat-chai-bg);
   border-color: var(--cat-chai);
@@ -484,6 +595,7 @@ input[type=number] {
 .category-btn.travel {
   border-color: rgba(6, 182, 212, 0.4);
 }
+
 .category-btn.travel:hover {
   background: var(--cat-travel-bg);
   border-color: var(--cat-travel);
@@ -493,6 +605,7 @@ input[type=number] {
 .category-btn.stationery {
   border-color: rgba(168, 85, 247, 0.4);
 }
+
 .category-btn.stationery:hover {
   background: var(--cat-stationery-bg);
   border-color: var(--cat-stationery);
@@ -502,6 +615,7 @@ input[type=number] {
 .category-btn.other {
   border-color: rgba(16, 185, 129, 0.4);
 }
+
 .category-btn.other:hover {
   background: var(--cat-other-bg);
   border-color: var(--cat-other);
@@ -525,7 +639,7 @@ input[type=number] {
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
@@ -549,7 +663,7 @@ input[type=number] {
 }
 
 /* ==========================================================================
-   Recent Spend Log
+   8. RECENT SPEND LOG
    ========================================================================== */
 .log-section {
   background: var(--bg-card);
@@ -592,12 +706,14 @@ input[type=number] {
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-muted);
+  font-family: var(--font-sans);
   font-size: 0.78rem;
   font-weight: 600;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  min-height: var(--min-target);
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
 .clear-all-btn:hover {
@@ -606,11 +722,20 @@ input[type=number] {
   border-color: rgba(239, 68, 68, 0.2);
 }
 
+.clear-all-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* Expense List & Items */
 .expense-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .expense-item {
@@ -621,7 +746,7 @@ input[type=number] {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 12px 14px;
-  transition: all 0.25s ease;
+  transition: opacity 0.25s ease, transform 0.25s ease, border-color 0.15s ease, background 0.15s ease;
   animation: slideDown 0.28s ease-out;
 }
 
@@ -703,12 +828,13 @@ input[type=number] {
   font-weight: 500;
 }
 
-/* Category Pill Variations */
+/* Category Pill Color Variations */
 .pill-chai {
   background: var(--cat-chai-bg);
   color: #fbbf24;
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
+
 .icon-chai {
   background: var(--cat-chai-bg);
   border: 1px solid rgba(245, 158, 11, 0.25);
@@ -719,6 +845,7 @@ input[type=number] {
   color: #38bdf8;
   border: 1px solid rgba(6, 182, 212, 0.3);
 }
+
 .icon-travel {
   background: var(--cat-travel-bg);
   border: 1px solid rgba(6, 182, 212, 0.25);
@@ -729,6 +856,7 @@ input[type=number] {
   color: #c084fc;
   border: 1px solid rgba(168, 85, 247, 0.3);
 }
+
 .icon-stationery {
   background: var(--cat-stationery-bg);
   border: 1px solid rgba(168, 85, 247, 0.25);
@@ -739,6 +867,7 @@ input[type=number] {
   color: #34d399;
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
+
 .icon-other {
   background: var(--cat-other-bg);
   border: 1px solid rgba(16, 185, 129, 0.25);
@@ -760,8 +889,8 @@ input[type=number] {
 }
 
 .delete-btn {
-  width: 32px;
-  height: 32px;
+  width: var(--min-target);
+  height: var(--min-target);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -769,10 +898,10 @@ input[type=number] {
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
-  font-size: 1.2rem;
-  font-weight: 400;
+  font-size: 1.3rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .delete-btn:hover {
@@ -796,10 +925,6 @@ input[type=number] {
   gap: 10px;
 }
 
-.empty-state.hidden {
-  display: none;
-}
-
 .empty-icon {
   font-size: 2.8rem;
   margin-bottom: 4px;
@@ -820,7 +945,7 @@ input[type=number] {
 }
 
 /* ==========================================================================
-   Modal Dialog
+   9. MODAL DIALOG
    ========================================================================== */
 .modal-backdrop {
   position: fixed;
@@ -833,10 +958,6 @@ input[type=number] {
   padding: 16px;
   z-index: 100;
   transition: opacity 0.2s ease;
-}
-
-.modal-backdrop.hidden {
-  display: none;
 }
 
 .modal-card {
@@ -890,14 +1011,14 @@ input[type=number] {
 
 .modal-btn {
   flex: 1;
-  min-height: 44px;
+  min-height: var(--min-target);
   border-radius: var(--radius-md);
   font-family: var(--font-sans);
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
   border: none;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .modal-btn.secondary {
@@ -921,7 +1042,7 @@ input[type=number] {
 }
 
 /* ==========================================================================
-   Toast Notification
+   10. TOAST NOTIFICATION
    ========================================================================== */
 .toast {
   position: fixed;
@@ -933,12 +1054,14 @@ input[type=number] {
   color: var(--text-primary);
   padding: 10px 20px;
   border-radius: var(--radius-full);
+  font-family: var(--font-sans);
   font-size: 0.85rem;
   font-weight: 600;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   opacity: 0;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 200;
   display: flex;
   align-items: center;
@@ -951,8 +1074,17 @@ input[type=number] {
 }
 
 /* ==========================================================================
-   Responsive Adaptations
+   11. RESPONSIVE DESIGN
    ========================================================================== */
+
+/* Tablets and smaller desktops */
+@media (max-width: 640px) {
+  .brand-title {
+    font-size: 1.15rem;
+  }
+}
+
+/* Mobile devices */
 @media (max-width: 480px) {
   body {
     padding: 14px 10px;
@@ -963,7 +1095,7 @@ input[type=number] {
   }
 
   .brand-title {
-    font-size: 1.25rem;
+    font-size: 1.05rem;
   }
 
   .card-amount {
@@ -985,5 +1117,16 @@ input[type=number] {
 
   .item-title {
     max-width: 130px;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
